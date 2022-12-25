@@ -11,5 +11,9 @@
     "@nuxtjs/google-fonts": "^3.0.0-1",
     "nuxt": "3.0.0",
     "sass": "^1.57.1"
+  },
+  "dependencies": {
+    "gsap": "^3.11.4",
+    "nuxt-icons": "^3.0.0"
   }
 }
