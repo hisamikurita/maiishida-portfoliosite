@@ -1,3 +1,26 @@
+<script setup>
+const menus = [
+  {
+    name: "WORKS",
+    href: "works",
+  },
+  {
+    name: "ABOUT ME",
+    href: "about",
+  },
+  {
+    name: "CONTACT",
+    href: "contact",
+  },
+];
+const snsList = [
+  {
+    name: "TW @maimai_kani",
+    href: "https://twitter.com/maimai_kani",
+  },
+];
+</script>
+
 <template>
   <header class="root">
     <div class="header-container">
@@ -22,29 +45,6 @@
     </div>
   </header>
 </template>
-
-<script setup>
-const menus = [
-  {
-    name: "WORKS",
-    href: "works",
-  },
-  {
-    name: "ABOUT ME",
-    href: "about",
-  },
-  {
-    name: "CONTACT",
-    href: "contact",
-  },
-];
-const snsList = [
-  {
-    name: "TW @maimai_kani",
-    href: "https://twitter.com/maimai_kani",
-  },
-];
-</script>
 
 <style lang="scss" scoped>
 .root {

@@ -1,3 +1,8 @@
+<script setup>
+const { $gsap } = useNuxtApp();
+console.log(useNuxtApp());
+</script>
+
 <template>
   <div class="index">
     <!-- mv section -->
