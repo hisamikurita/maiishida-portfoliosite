@@ -1,7 +1,4 @@
-<script setup>
-const { $gsap } = useNuxtApp();
-console.log(useNuxtApp());
-</script>
+<script setup></script>
 
 <template>
   <div class="index">
@@ -15,11 +12,18 @@ console.log(useNuxtApp());
               THIS IS
               <span class="mv-title-border">MY PORTFOLIO</span> SITE.<br />
             </span>
-            I'M SO GLAD YOU CAME.
+            I'M SO GLAD YOU CAME.<br />
+            MY WORK IS WEBDESINER<br />
+            WOOOOOOOOOOOOORKING FROM<br />
+            2020 → 2023
           </h1>
           <p>あいうえお</p>
         </div>
       </div>
+      <div class="mv-canvas">
+        <AppParticle />
+      </div>
+      <div class="mv-circle"></div>
     </section>
     <!-- pickup section -->
     <section class="pickup"></section>
@@ -36,7 +40,47 @@ console.log(useNuxtApp());
 //
 // mv section
 //
+.mv {
+  position: relative;
+}
+.mv-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: luminosity;
+}
+
+.mv-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  width: 200px;
+  height: 200px;
+  background-color: #f21a68;
+  border-radius: 50%;
+  mix-blend-mode: luminosity;
+  animation: test 5s infinite;
+
+  @keyframes test {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-500px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+}
+
 .mv-bg {
+  // position: relative;
+  height: 100vh;
   padding: 94px 0 0 0;
 }
 .mv-container {
@@ -44,6 +88,7 @@ console.log(useNuxtApp());
 }
 
 .mv-title {
+  position: relative;
   font-size: vw(100);
   line-height: 0.96;
   white-space: nowrap;
