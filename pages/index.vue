@@ -23,7 +23,6 @@
       <div class="mv-canvas">
         <AppParticle />
       </div>
-      <div class="mv-circle"></div>
     </section>
     <!-- pickup section -->
     <section class="pickup"></section>
@@ -50,38 +49,15 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  mix-blend-mode: luminosity;
-}
-
-.mv-circle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate3d(-50%, -50%, 0);
-  width: 200px;
-  height: 200px;
-  background-color: #f21a68;
-  border-radius: 50%;
-  mix-blend-mode: luminosity;
-  animation: test 5s infinite;
-
-  @keyframes test {
-    0% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-500px);
-    }
-    100% {
-      transform: translateY(0);
-    }
-  }
 }
 
 .mv-bg {
-  // position: relative;
+  position: relative;
   height: 100vh;
   padding: 94px 0 0 0;
+  background-color: #f5f5f5;
+  mix-blend-mode: difference;
+  z-index: 1;
 }
 .mv-container {
   padding: 0 vw(12);

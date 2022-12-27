@@ -1,45 +1,87 @@
 <script setup>
+import { gsap } from "gsap";
+
 const refCanvas = ref();
 
 onMounted(() => {
   const canvas = refCanvas.value;
-  console.log(canvas);
   const ctx = canvas.getContext("2d") || null;
   const dpr = window.devicePixelRatio || 1.0;
-  const ball = { x: 20, y: 20 };
-  let xunits = 0;
-  let yunits = 0;
-  let angle = 35;
-  let radians = 0;
-  let speed = 5;
+  const numBalls = 15;
+  const size = 20;
+  const balls = [];
+  let tempX = 0;
+  let tempY = 0;
+  let tempUnitX = 0;
+  let tempUnitY = 0;
+  let tempAngle = 35;
+  let tempRadians = 0;
+  let tempSpeed = 0.3;
 
-  const updateBall = () => {
-    radians = (angle * Math.PI) / 180;
-    xunits = Math.cos(radians) * speed;
-    yunits = Math.sin(radians) * speed;
+  const _setCanvasSize = () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
   };
-  updateBall();
+
+  const init = () => {
+    _setCanvasSize();
+  };
+
+  const updateBall = (ball) => {
+    ball.radians = (ball.angle * Math.PI) / 180;
+    ball.xunits = Math.cos(ball.radians) * ball.speed;
+    ball.yunits = Math.sin(ball.radians) * ball.speed;
+  };
 
   const drawScreen = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ball.x += xunits;
-    ball.y += yunits;
+    for (let i = 0; i < balls.length; i++) {
+      const ball = balls[i];
+      ball.x += ball.xunits;
+      ball.y += ball.yunits;
 
-    ctx.fillStyle = "#f21a68";
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, 15, 0, Math.PI * 2, true);
-    ctx.fill();
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, 15, ball.radius, Math.PI * 2, true);
+      ctx.fillStyle = "#00daa1";
+      ctx.fill();
 
-    if (ball.x > canvas.width || ball.x < 0) {
-      angle = 180 - angle;
-      updateBall();
-    } else if (ball.y > canvas.height || ball.y < 0) {
-      angle = 360 - angle;
-      updateBall();
+      if (ball.x > canvas.width || ball.x < 0) {
+        ball.angle = 180 - ball.angle;
+        updateBall(ball);
+      } else if (ball.y > canvas.height || ball.y < 0) {
+        ball.angle = 360 - ball.angle;
+        updateBall(ball);
+      }
     }
   };
-  setInterval(drawScreen, 33);
+
+  init();
+
+  for (let i = 0; i < numBalls; i++) {
+    tempX = Math.floor(Math.random() * canvas.width);
+    tempY = Math.floor(Math.random() * canvas.height);
+    tempSpeed = Math.random() * 0.3 + tempSpeed;
+    tempAngle = Math.floor(Math.random() * 360);
+    tempRadians = (tempAngle * Math.PI) / 180;
+    tempUnitX = Math.cos(tempRadians) * tempSpeed;
+    tempUnitY = Math.sin(tempRadians) * tempSpeed;
+
+    balls.push({
+      x: tempX,
+      y: tempY,
+      radius: size,
+      speed: tempSpeed,
+      angle: tempAngle,
+      xunits: tempUnitX,
+      yunits: tempUnitY,
+    });
+  }
+
+  gsap.ticker.add(drawScreen);
+  window.addEventListener("resize", _setCanvasSize);
 });
 </script>
 

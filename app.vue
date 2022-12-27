@@ -5,6 +5,7 @@ import { ScrollSmoother } from "./vendor/ScrollSmoother";
 
 // クライアントサイドのビルドの時のみ実行
 if (typeof window !== "undefined") {
+  gsap.ticker.fps(60);
   gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
   ScrollSmoother.create({
     smooth: 1.2,
