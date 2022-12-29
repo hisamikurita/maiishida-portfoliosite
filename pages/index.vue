@@ -29,7 +29,11 @@
     <!-- project section -->
     <section class="project"></section>
     <!-- about section -->
-    <section class="about"></section>
+    <section class="about">
+      <div class="about-canvas">
+        <AppParticle />
+      </div>
+    </section>
     <!-- contact section -->
     <section class="contact"></section>
   </div>
@@ -113,8 +117,18 @@
 // about section
 //
 .about {
+  position: relative;
   height: 100vh;
   background-color: cadetblue;
+}
+
+.about-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 //

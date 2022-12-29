@@ -2,203 +2,272 @@
 import { gsap } from "gsap";
 
 const refCanvas = ref();
+const numParticles = 15;
+const size = 20;
+const particles = [];
+let canvas = null;
+let ctx = null;
+let templateParticle = null;
+let iObserver = null;
+
+/**
+ * canvasサイズの設定
+ */
+const setCanvasSize = () => {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+};
+
+/**
+ * パーティクル同士の衝突判定
+ */
+const hitParticles = (particle1, particle2) => {
+  let hit = false;
+  // ピタゴラスの定理(A*2+B*2=C*2)からパーティクルの中心を結ぶ直線の距離を求める
+  let dx = particle1.nextX - particle2.nextX;
+  let dy = particle1.nextY - particle2.nextY;
+  let distance = dx * dx + dy * dy;
+
+  // パーティクルのパーティクルの中心間の距離の二乗とボールの半径の和の二乗を比較して、
+  // 前者が後者よりも小さい値なら衝突していると判定できる
+  if (
+    distance <=
+    (particle1.radius + particle2.radius) *
+      (particle1.radius + particle2.radius)
+  ) {
+    hit = true;
+  }
+  return hit;
+};
+
+/**
+ * 全てのパーティクルから、新たに生成したパーティクルと重ならないかチェックする
+ */
+const canParticlesPosition = (particle) => {
+  let canParticlePosition = true;
+  for (let i = 0; i < particles.length; i++) {
+    if (hitParticles(particle, particles[i])) {
+      canParticlePosition = false;
+    }
+  }
+  return canParticlePosition;
+};
+
+/**
+ * パーティクル生成
+ */
+const createParticles = () => {
+  for (let i = 0; i < numParticles; i++) {
+    let place = false;
+    // パーティクルの最初の位置が重ならないように,whileループを作成する
+    while (!place) {
+      const x = Math.floor(Math.random() * canvas.width);
+      const y = Math.floor(Math.random() * canvas.height);
+      const speed = Math.random() * 0.7 + 0.7;
+      const angle = Math.floor(Math.random() * 360);
+      const radians = (angle * Math.PI) / 180;
+      const vx = Math.cos(radians) * speed;
+      const vy = Math.sin(radians) * speed;
+
+      templateParticle = {
+        x: x,
+        y: y,
+        nextX: x,
+        nextY: y,
+        velocityX: vx,
+        velocityY: vy,
+        radius: size,
+        speed: speed,
+        angle: angle,
+        mass: size,
+      };
+      // canParticlesPositionがtrueを返したときにwhileループを抜ける
+      place = canParticlesPosition(templateParticle);
+    }
+    particles.push(templateParticle);
+  }
+};
+
+/**
+ * 画面内に表示されている時だけ更新
+ */
+const observe = () => {
+  iObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          gsap.ticker.add(drawParticles);
+        } else {
+          gsap.ticker.remove(drawParticles);
+        }
+      });
+    },
+    { rootMargin: "0%" }
+  );
+  iObserver.observe(canvas);
+};
+
+/**
+ * パーティクルの次に進むXYの値を更新
+ */
+const update = () => {
+  for (let i = 0; i < particles.length; i++) {
+    const particle = particles[i];
+    particle.nextX = particle.x + particle.velocityX;
+    particle.nextY = particle.y + particle.velocityY;
+  }
+};
+
+/**
+ * パーティクルとcanvasサイズの衝突判定
+ */
+const rebound = () => {
+  for (let i = 0; i < particles.length; i++) {
+    const particle = particles[i];
+
+    if (particle.x + particle.radius > canvas.width) {
+      particle.velocityX = particle.velocityX * -1.0;
+      particle.nextX = canvas.width - particle.radius;
+    } else if (particle.nextX - particle.radius < 0) {
+      particle.velocityX = particle.velocityX * -1.0;
+      particle.nextX = particle.radius;
+    } else if (particle.nextY + particle.radius > canvas.height) {
+      particle.velocityY = particle.velocityY * -1.0;
+      particle.nextY = canvas.height - particle.radius;
+    } else if (particle.nextY - particle.radius < 0) {
+      particle.velocityY = particle.velocityY * -1.0;
+      particle.nextY = particle.radius;
+    }
+  }
+};
+
+/**
+ * パーティクル同士の衝突処理
+ */
+const collisionParticlesDetection = (particle1, particle2) => {
+  // 描画の後にパーティクルがどの位置にいるのかを比較するために、nextXYを比較する
+  // ボールの中心座標から、衝突する時の角度を求める
+  const dx = particle1.nextX - particle2.nextX;
+  const dy = particle1.nextY - particle2.nextY;
+  const collisionAngle = Math.atan2(dy, dx);
+  // 衝突が起こる前のXYの速度を元に各ボールの速さを求める
+  const speed1 = Math.sqrt(
+    particle1.velocityX * particle1.velocityX +
+      particle1.velocityY * particle1.velocityY
+  );
+  const speed2 = Math.sqrt(
+    particle2.velocityX * particle2.velocityX +
+      particle2.velocityY * particle2.velocityY
+  );
+  // 衝突が起こる前のXYの速度を元に各ボールの角度を求める
+  const direction1 = Math.atan2(particle1.velocityY, particle1.velocityX);
+  const direction2 = Math.atan2(particle2.velocityY, particle2.velocityX);
+  // 運動量保存の法則を適用したいので、ベクトルを回転させる
+  const velocityX1 = speed1 * Math.cos(direction1 - collisionAngle);
+  const velocityY1 = speed1 * Math.sin(direction1 - collisionAngle);
+  const velocityX2 = speed2 * Math.cos(direction2 - collisionAngle);
+  const velocityY2 = speed2 * Math.sin(direction2 - collisionAngle);
+  // 各ボールのmass値から運動量保存の法則に基づいて、XYの速度を更新
+  const finalVelocityX1 =
+    ((particle1.mass - particle2.mass) * velocityX1 +
+      (particle2.mass + particle2.mass) * velocityX2) /
+    (particle1.mass + particle2.mass);
+  const finalVelocityX2 =
+    ((particle1.mass + particle1.mass) * velocityX1 +
+      (particle2.mass - particle1.mass) * velocityX2) /
+    (particle1.mass + particle2.mass);
+  // Xの速度だけ更新する
+  const finalVelocityY1 = velocityY1;
+  const finalVelocityY2 = velocityY2;
+  // 速度が求められたので、衝突の角度が維持されるようにベクトルの回転を元に戻す
+  particle1.velocityX =
+    Math.cos(collisionAngle) * finalVelocityX1 +
+    Math.cos(collisionAngle + Math.PI / 2) * finalVelocityY1;
+  particle1.velocityY =
+    Math.sin(collisionAngle) * finalVelocityX1 +
+    Math.sin(collisionAngle + Math.PI / 2) * finalVelocityY1;
+  particle2.velocityX =
+    Math.cos(collisionAngle) * finalVelocityX2 +
+    Math.cos(collisionAngle + Math.PI / 2) * finalVelocityY2;
+  particle2.velocityY =
+    Math.sin(collisionAngle) * finalVelocityX2 +
+    Math.sin(collisionAngle + Math.PI / 2) * finalVelocityY2;
+  // ここでnextXYの値を更新する
+  particle1.nextX = particle1.nextX += particle1.velocityX;
+  particle1.nextY = particle1.nextY += particle1.velocityY;
+  particle2.nextX = particle2.nextX += particle2.velocityX;
+  particle2.nextY = particle2.nextY += particle2.velocityY;
+};
+
+/**
+ * パーティクル同士の衝突をチェックする
+ */
+const collide = () => {
+  // 二重ループで各パーティクルと他のパーティクルがどれとも衝突しないかチェックする
+  for (let i = 0; i < particles.length; i++) {
+    const particle1 = particles[i];
+    // 1をプラスすることで同じパーティクル同士では比較しない
+    for (let j = i + 1; j < particles.length; j++) {
+      const particle2 = particles[j];
+      if (hitParticles(particle1, particle2)) {
+        // 衝突したときにcollisionParticlesDetectionが呼び出される
+        collisionParticlesDetection(particle1, particle2);
+      }
+    }
+  }
+};
+
+/**
+ * 描画
+ */
+const render = () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = 0; i < particles.length; i++) {
+    const particle = particles[i];
+    particle.x = particle.nextX;
+    particle.y = particle.nextY;
+
+    ctx.beginPath();
+    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2, true);
+    ctx.fillStyle = "#00daa1";
+    ctx.fill();
+  }
+};
+
+const drawParticles = () => {
+  update();
+  rebound();
+  collide();
+  render();
+};
+
+const init = () => {
+  setCanvasSize();
+  createParticles();
+  observe();
+  window.addEventListener("resize", setCanvasSize);
+};
+
+const destroy = () => {
+  iObserver.unobserve(canvas);
+  gsap.ticker.remove(drawParticles);
+  window.removeEventListener("resize", setCanvasSize);
+};
+
+// Lifecycle Hooks
 
 onMounted(() => {
-  const canvas = refCanvas.value;
-  const ctx = canvas.getContext("2d") || null;
-  const dpr = window.devicePixelRatio || 1.0;
-  const numBalls = 15;
-  const size = 20;
-  const balls = [];
-  let tempBall = null;
-  let tempX = 0;
-  let tempY = 0;
-  let tempAngle = 35;
-  let tempRadians = 0;
-  let tempSpeed = 0.3;
-  let tempVelocityX = 0;
-  let tempVelocityY = 0;
-
-  const setCanvasSize = () => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-  };
-
-  const hitTestCircle = (ball1, ball2) => {
-    let retval = false;
-    let dx = ball1.nextX - ball2.nextX;
-    let dy = ball1.nextY - ball2.nextY;
-    let distance = dx * dx + dy * dy;
-
-    if (
-      distance <=
-      (ball1.radius + ball2.radius) * (ball1.radius + ball2.radius)
-    ) {
-      retval = true;
-    }
-    return retval;
-  };
-
-  const canStarHere = (ball) => {
-    let retval = true;
-    for (let i = 0; i < balls.length; i++) {
-      if (hitTestCircle(ball, balls[i])) {
-        retval = false;
-      }
-    }
-    return retval;
-  };
-
-  const createParticle = () => {
-    for (let i = 0; i < numBalls; i++) {
-      let placeOK = false;
-      while (!placeOK) {
-        tempX = Math.floor(Math.random() * canvas.width);
-        tempY = Math.floor(Math.random() * canvas.height);
-        tempSpeed = Math.random() * 0.3 + tempSpeed;
-        tempAngle = Math.floor(Math.random() * 360);
-        tempRadians = (tempAngle * Math.PI) / 180;
-        tempVelocityX = Math.cos(tempRadians) * tempSpeed;
-        tempVelocityY = Math.sin(tempRadians) * tempSpeed;
-
-        tempBall = {
-          x: tempX,
-          y: tempY,
-          nextX: tempX,
-          nextY: tempY,
-          velocityX: tempVelocityX,
-          velocityY: tempVelocityY,
-          radius: size,
-          speed: tempSpeed,
-          angle: tempAngle,
-          mass: size,
-        };
-        placeOK = canStarHere(tempBall);
-      }
-      balls.push(tempBall);
-    }
-  };
-
-  const init = () => {
-    setCanvasSize();
-    createParticle();
-    console.log(balls);
-  };
-
-  const update = () => {
-    for (let i = 0; i < balls.length; i++) {
-      const ball = balls[i];
-      ball.nextX = ball.x + ball.velocityX;
-      ball.nextY = ball.y + ball.velocityY;
-    }
-  };
-
-  const testWalls = () => {
-    for (let i = 0; i < balls.length; i++) {
-      const ball = balls[i];
-
-      if (ball.x + ball.radius > canvas.width) {
-        ball.velocityX = ball.velocityX * -1.0;
-        ball.nextX = canvas.width - ball.radius;
-      } else if (ball.nextX - ball.radius < 0) {
-        ball.velocityX = ball.velocityX * -1.0;
-        ball.nextX = ball.radius;
-      } else if (ball.nextY + ball.radius > canvas.height) {
-        ball.velocityY = ball.velocityY * -1.0;
-        ball.nextY = canvas.height - ball.radius;
-      } else if (ball.nextY - ball.radius < 0) {
-        ball.velocityY = ball.velocityY * -1.0;
-        ball.nextY = ball.radius;
-      }
-    }
-  };
-
-  const collideBalls = (ball1, ball2) => {
-    const dx = ball1.nextX - ball2.nextX;
-    const dy = ball1.nextY - ball2.nextY;
-    const collisionAngle = Math.atan2(dy, dx);
-    const speed1 = Math.sqrt(
-      ball1.velocityX * ball1.velocityX + ball1.velocityY * ball1.velocityY
-    );
-    const speed2 = Math.sqrt(
-      ball2.velocityX * ball2.velocityX + ball2.velocityY * ball2.velocityY
-    );
-    const direction1 = Math.atan2(ball1.velocityY, ball1.velocityX);
-    const direction2 = Math.atan2(ball2.velocityY, ball2.velocityX);
-    const velocityX1 = speed1 * Math.cos(direction1 - collisionAngle);
-    const velocityY1 = speed1 * Math.sin(direction1 - collisionAngle);
-    const velocityX2 = speed2 * Math.cos(direction2 - collisionAngle);
-    const velocityY2 = speed2 * Math.sin(direction2 - collisionAngle);
-    const finalVelocityX1 =
-      ((ball1.mass - ball2.mass) * velocityX1 +
-        (ball2.mass + ball2.mass) * velocityX2) /
-      (ball1.mass + ball2.mass);
-    const finalVelocityX2 =
-      ((ball1.mass + ball1.mass) * velocityX1 +
-        (ball2.mass - ball1.mass) * velocityX2) /
-      (ball1.mass + ball2.mass);
-    const finalVelocityY1 = velocityY1;
-    const finalVelocityY2 = velocityY2;
-
-    ball1.velocityX =
-      Math.cos(collisionAngle) * finalVelocityX1 +
-      Math.cos(collisionAngle + Math.PI / 2) * finalVelocityY1;
-    ball1.velocityY =
-      Math.sin(collisionAngle) * finalVelocityX1 +
-      Math.sin(collisionAngle + Math.PI / 2) * finalVelocityY1;
-    ball2.velocityX =
-      Math.cos(collisionAngle) * finalVelocityX2 +
-      Math.cos(collisionAngle + Math.PI / 2) * finalVelocityY2;
-    ball2.velocityY =
-      Math.sin(collisionAngle) * finalVelocityX2 +
-      Math.sin(collisionAngle + Math.PI / 2) * finalVelocityY2;
-
-    ball1.nextX = ball1.nextX += ball1.velocityX;
-    ball1.nextY = ball1.nextY += ball1.velocityY;
-    ball2.nextX = ball2.nextX += ball2.velocityX;
-    ball2.nextY = ball2.nextY += ball2.velocityY;
-  };
-
-  const collide = () => {
-    for (let i = 0; i < balls.length; i++) {
-      const ball = balls[i];
-      for (let j = i + 1; j < balls.length; j++) {
-        const testBall = balls[j];
-        if (hitTestCircle(ball, testBall)) {
-          collideBalls(ball, testBall);
-        }
-      }
-    }
-  };
-
-  const render = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    for (let i = 0; i < balls.length; i++) {
-      const ball = balls[i];
-      ball.x = ball.nextX;
-      ball.y = ball.nextY;
-
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, true);
-      ctx.fillStyle = "#00daa1";
-      ctx.fill();
-    }
-  };
-
-  const draw = () => {
-    update();
-    testWalls();
-    collide();
-    render();
-  };
+  canvas = refCanvas.value;
+  ctx = canvas.getContext("2d") || null;
 
   init();
+});
 
-  gsap.ticker.add(draw);
-  window.addEventListener("resize", setCanvasSize);
+onBeforeUnmount(() => {
+  destroy();
 });
 </script>
 
