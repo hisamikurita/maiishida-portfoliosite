@@ -221,6 +221,7 @@ const projectData = useNuxtApp().$projectData;
 //
 // contact section
 //
+
 .contact {
   height: 100vh;
   background-color: aquamarine;
