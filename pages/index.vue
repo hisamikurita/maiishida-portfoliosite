@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
+const projectData = useNuxtApp().$projectData;
+</script>
 
 <template>
   <div class="index">
@@ -25,7 +27,41 @@
       </div>
     </section>
     <!-- pickup section -->
-    <section class="pickup"></section>
+    <section class="pickup">
+      <div class="pickup-bg">
+        <div class="pickup-container">
+          <h2 class="pickup-title">PICKUP WORKS</h2>
+          <div class="pickup-inner">
+            <div class="pickup-nav">
+              <p class="pickup-nav-title">PICKUP CONTENT</p>
+              <ul class="pickup-nav-list">
+                <li
+                  v-for="(data, index) in projectData"
+                  class="pickup-nav-item"
+                >
+                  <p class="pickup-nav-text">
+                    <span class="pickup-nav-text-num">0{{ index + 1.0 }}</span>
+                    / {{ data.title }}
+                  </p>
+                </li>
+              </ul>
+            </div>
+            <ul class="pickup-list">
+              <li v-for="(data, index) in projectData" class="pickup-item">
+                <NuxtLink to="#" class="pickup-link">
+                  <div>
+                    <span>0{{ index + 1.0 }}</span>
+                    <h2 class="pickup-item-title">{{ data.title }}</h2>
+                  </div>
+                  <p>{{ data.company }}</p>
+                  <p>{{ data.genre }}</p>
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
     <!-- project section -->
     <section class="project"></section>
     <!-- about section -->
@@ -59,7 +95,7 @@
   position: relative;
   height: 100vh;
   padding: 94px 0 0 0;
-  background-color: #f5f5f5;
+  background-color: $color-gray;
   mix-blend-mode: difference;
   z-index: 1;
 }
@@ -101,8 +137,59 @@
 // pickup section
 //
 .pickup {
-  height: 100vh;
-  background-color: aqua;
+  position: relative;
+}
+
+.pickup-bg {
+  padding: 200px 0;
+  background-color: $color-gray;
+}
+
+.pickup-container {
+  padding: 0 vw(12);
+}
+
+.pickup-inner {
+  display: flex;
+}
+
+.pickup-nav {
+  flex-shrink: 0;
+  width: 190px;
+  margin: 0 16px 0 0;
+  padding: 30px 0 0 0;
+  font-size: 12px;
+  border-top: solid 1px $color-black;
+}
+
+.pickup-nav-title {
+  margin: 0 0 20px 0;
+}
+
+.pickup-nav-item {
+  &:not(:last-of-type) {
+    margin: 0 0 10px 0;
+  }
+}
+
+.pickup-list {
+  width: 100%;
+}
+
+.pickup-item-title {
+  font-size: 64px;
+}
+
+.pickup-item {
+  border-top: solid 1px $color-black;
+
+  &:last-of-type {
+    border-bottom: solid 1px $color-black;
+  }
+}
+
+.pickup-nav-text-num {
+  color: $color-blue;
 }
 
 //

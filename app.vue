@@ -11,6 +11,14 @@ if (typeof window !== "undefined") {
     smooth: 1.2,
   });
 }
+
+// microcmsからデータを取得
+const runtimeConfig = useRuntimeConfig();
+const { data } = await useFetch("/project", {
+  baseURL: runtimeConfig.public.serviceUrl,
+  headers: { "X-MICROCMS-API-KEY": runtimeConfig.public.apiKey },
+});
+useNuxtApp().provide("projectData", data._rawValue.contents);
 </script>
 
 <template>

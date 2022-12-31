@@ -1,5 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      serviceUrl: process.env.SERVICE_URL,
+      apiKey: process.env.API_KEY,
+    },
+  },
   // global css
   css: ["/assets/scss/global.scss"],
   // single css
