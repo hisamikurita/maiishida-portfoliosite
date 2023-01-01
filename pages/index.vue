@@ -41,20 +41,23 @@ const projectData = useNuxtApp().$projectData;
                 >
                   <p class="pickup-nav-text">
                     <span class="pickup-nav-text-num">0{{ index + 1.0 }}</span>
-                    / {{ data.title }}
+                    / {{ data.title.main }}
                   </p>
                 </li>
               </ul>
             </div>
             <ul class="pickup-list">
               <li v-for="(data, index) in projectData" class="pickup-item">
-                <NuxtLink to="#" class="pickup-link">
-                  <div>
-                    <span>0{{ index + 1.0 }}</span>
-                    <h2 class="pickup-item-title">{{ data.title }}</h2>
+                <NuxtLink :to="data.id" class="pickup-link">
+                  <div class="pickup-item-title-area">
+                    <span class="pickup-item-title-num"
+                      >0{{ index + 1.0 }}</span
+                    >
+                    <h3 class="pickup-item-title">{{ data.title.main }}</h3>
                   </div>
-                  <p>{{ data.company }}</p>
-                  <p>{{ data.genre }}</p>
+                  <p class="pickup-item-company">{{ data.client }}</p>
+                  <p class="pickup-item-genre">{{ data.type }}</p>
+                  <nuxt-icon name="arrow" filled class="pickup-item-arrow" />
                 </NuxtLink>
               </li>
             </ul>
@@ -63,7 +66,9 @@ const projectData = useNuxtApp().$projectData;
       </div>
     </section>
     <!-- project section -->
-    <section class="project"></section>
+    <section class="project">
+      <AppCardFullScreenTicket />
+    </section>
     <!-- about section -->
     <section class="about">
       <div class="about-canvas">
@@ -172,15 +177,16 @@ const projectData = useNuxtApp().$projectData;
   }
 }
 
+.pickup-nav-text-num {
+  color: $color-blue;
+}
+
 .pickup-list {
   width: 100%;
 }
 
-.pickup-item-title {
-  font-size: 64px;
-}
-
 .pickup-item {
+  position: relative;
   border-top: solid 1px $color-black;
 
   &:last-of-type {
@@ -188,16 +194,51 @@ const projectData = useNuxtApp().$projectData;
   }
 }
 
-.pickup-nav-text-num {
-  color: $color-blue;
+.pickup-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 28px 0;
+}
+
+.pickup-item-title-area {
+  display: flex;
+}
+
+.pickup-item-title-num {
+  margin: 0 30px 0 0;
+  font-size: 15px;
+}
+.pickup-item-title {
+  position: relative;
+  top: -6px;
+  margin: 0 0 94px 0;
+  font-size: 64px;
+}
+
+.pickup-item-company {
+  margin: 0 0 6px 0;
+  font-size: 15px;
+}
+
+.pickup-item-genre {
+  color: #8a8a8a;
+  font-size: 12px;
+}
+
+.pickup-item-arrow {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  width: 48px;
+  height: 48px;
 }
 
 //
 // project section
 //
 .project {
-  height: 100vh;
-  background-color: brown;
+  color: #f2b744;
 }
 
 //
