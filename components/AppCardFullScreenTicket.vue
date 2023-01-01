@@ -41,9 +41,7 @@
       </div>
     </div>
     <div class="article-right">
-      <div class="article-border">
-        <p>SIDE</p>
-      </div>
+      <div class="article-border"></div>
     </div>
   </article>
 </template>
