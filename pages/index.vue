@@ -76,6 +76,44 @@ const projectData = useNuxtApp().$projectData;
     </section>
     <!-- about section -->
     <section class="about">
+      <div class="about-bg">
+        <div class="about-border">
+          <h2>ABOUT ME</h2>
+          <div class="about-list">
+            <div class="about-img-01">
+              <nuxt-img
+                src="/images/about-img-01.jpg"
+                alt=""
+                quality="80"
+                format="webp"
+              />
+            </div>
+            <div class="about-img-02">
+              <nuxt-img
+                src="/images/about-img-02.jpg"
+                alt=""
+                quality="80"
+                format="webp"
+              />
+            </div>
+            <div>
+              <p>PROFILE</p>
+              <div>
+                <p>NAME</p>
+                <p>MAI ISHIDA</p>
+              </div>
+              <p>
+                自分だけの色(フロンティア)を見つけよう。<br />
+                大人になっても輝かしい青春を送ることができる。<br />
+                そんなイメージを表現したフロンティア様のリクルートサイトです。
+              </p>
+            </div>
+          </div>
+          <div class="about-loop-text">
+            <AppLoopText loop-text="MAI ISHIDA" />
+          </div>
+        </div>
+      </div>
       <div class="about-canvas">
         <AppParticle />
       </div>
@@ -251,8 +289,39 @@ const projectData = useNuxtApp().$projectData;
 //
 .about {
   position: relative;
-  height: 100vh;
-  background-color: cadetblue;
+}
+
+.about-bg {
+  padding: 86px 40px;
+  background-color: $color-gray;
+}
+
+.about-border {
+  position: relative;
+  background-color: $color-white;
+  border: solid 1px $color-black;
+  overflow: hidden;
+}
+
+.about-list {
+  display: flex;
+}
+
+.about-img-01 {
+  width: vw(470);
+  height: vw(483);
+}
+
+.about-img-02 {
+  width: vw(470);
+  height: vw(483);
+}
+
+.about-loop-text {
+  color: transparent;
+  font-size: 120px;
+  -webkit-text-stroke: 1px $color-black;
+  text-stroke: 1px $color-black;
 }
 
 .about-canvas {

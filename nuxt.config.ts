@@ -26,7 +26,7 @@ export default defineNuxtConfig({
       link: [{ rel: "icon", href: "/favicon.ico" }],
     },
   },
-  modules: ["@nuxtjs/google-fonts", "nuxt-icons"],
+  modules: ["@nuxtjs/google-fonts", "nuxt-icons", "@nuxt/image-edge"],
   googleFonts: {
     families: {
       Almarai: [400],

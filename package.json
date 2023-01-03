@@ -11,12 +11,14 @@
     "node": ">=16"
   },
   "devDependencies": {
+    "@nuxt/image": "^0.7.1",
+    "@nuxt/image-edge": "^1.0.0-27840416.dc1ed65",
     "@nuxtjs/google-fonts": "^3.0.0-1",
     "nuxt": "3.0.0",
+    "nuxt-icons": "^3.0.0",
     "sass": "^1.57.1"
   },
   "dependencies": {
-    "gsap": "^3.11.4",
-    "nuxt-icons": "^3.0.0"
+    "gsap": "^3.11.4"
   }
 }

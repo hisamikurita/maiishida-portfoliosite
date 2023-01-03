@@ -42,7 +42,7 @@ const replaceRole = role.replaceAll("\n", "<br>");
             <dt class="article-dt">・MY ROLE</dt>
             <dd v-html="replaceRole" class="article-dd"></dd>
           </dl>
-          <div class="article-move-text">
+          <div class="article-loop-text">
             <AppLoopText :loop-text="title.main" />
           </div>
         </div>
@@ -177,7 +177,7 @@ const replaceRole = role.replaceAll("\n", "<br>");
   line-height: 1;
 }
 
-.article-move-text {
+.article-loop-text {
   position: absolute;
   bottom: 0;
   left: 0;
