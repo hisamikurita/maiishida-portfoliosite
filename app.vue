@@ -19,18 +19,9 @@ if (typeof window !== "undefined") {
  * microcmsからデータを取得
  */
 const runtimeConfig = useRuntimeConfig();
-// SSGの時は隠蔽されているSERVICEURLとAPIKEYを使用する
 const { data } = await useFetch("/project", {
-  baseURL:
-    process.env.NODE_ENV !== "production"
-      ? runtimeConfig.serviceUrl
-      : runtimeConfig.public.serviceUrl,
-  headers: {
-    "X-MICROCMS-API-KEY":
-      process.env.NODE_ENV !== "production"
-        ? runtimeConfig.apiKey
-        : runtimeConfig.public.apiKey,
-  },
+  baseURL: runtimeConfig.serviceUrl,
+  headers: { "X-MICROCMS-API-KEY": runtimeConfig.apiKey },
 });
 useNuxtApp().provide("projectData", data._rawValue.contents);
 
@@ -51,7 +42,6 @@ const setViewportWidth = () => {
 const setViewportHeight = () => {
   initHeight();
 };
-
 // クライアントサイドのビルドの時のみ実行
 if (typeof window !== "undefined") {
   setViewportWidth();
