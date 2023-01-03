@@ -4,11 +4,7 @@ const { API_KEY, SERVICE_URL } = process.env;
 export default defineNuxtConfig({
   runtimeConfig: {
     // SSGの時は隠蔽されているSERVICEURLとAPIKEYを使用する
-    public: {
-      serviceUrl:
-        process.env.NODE_ENV !== "production" ? SERVICE_URL : undefined,
-      apiKey: process.env.NODE_ENV !== "production" ? API_KEY : undefined,
-    },
+    public: { serviceUrl: SERVICE_URL, apiKey: API_KEY },
     serviceUrl: SERVICE_URL,
     apiKey: API_KEY,
   },
