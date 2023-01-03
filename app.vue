@@ -51,6 +51,7 @@ const setViewportWidth = () => {
 const setViewportHeight = () => {
   initHeight();
 };
+
 // クライアントサイドのビルドの時のみ実行
 if (typeof window !== "undefined") {
   setViewportWidth();
