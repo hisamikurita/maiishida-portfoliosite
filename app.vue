@@ -19,9 +19,18 @@ if (typeof window !== "undefined") {
  * microcmsからデータを取得
  */
 const runtimeConfig = useRuntimeConfig();
+// SSGの時は隠蔽されているSERVICEURLとAPIKEYを使用する
 const { data } = await useFetch("/project", {
-  baseURL: runtimeConfig.public.serviceUrl,
-  headers: { "X-MICROCMS-API-KEY": runtimeConfig.public.apiKey },
+  baseURL:
+    process.env.NODE_ENV !== "production"
+      ? runtimeConfig.serviceUrl
+      : runtimeConfig.public.serviceUrl,
+  headers: {
+    "X-MICROCMS-API-KEY":
+      process.env.NODE_ENV !== "production"
+        ? runtimeConfig.apiKey
+        : runtimeConfig.public.apiKey,
+  },
 });
 useNuxtApp().provide("projectData", data._rawValue.contents);
 

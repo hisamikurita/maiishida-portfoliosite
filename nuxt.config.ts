@@ -3,9 +3,13 @@ const { API_KEY, SERVICE_URL } = process.env;
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   runtimeConfig: {
+    // SSGの時は隠蔽されているSERVICEURLとAPIKEYを使用する
+    serviceUrl: SERVICE_URL,
+    apiKey: API_KEY,
     public: {
-      serviceUrl: SERVICE_URL,
-      apiKey: API_KEY,
+      serviceUrl:
+        process.env.NODE_ENV !== "production" ? SERVICE_URL : undefined,
+      apiKey: process.env.NODE_ENV !== "production" ? API_KEY : undefined,
     },
   },
   // global css
