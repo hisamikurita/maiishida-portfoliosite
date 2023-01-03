@@ -67,7 +67,11 @@ const projectData = useNuxtApp().$projectData;
     </section>
     <!-- project section -->
     <section class="project">
-      <AppCardFullScreenTicket />
+      <ul>
+        <li v-for="(data, index) in projectData">
+          <AppCardFullScreenTicket :project="data" />
+        </li>
+      </ul>
     </section>
     <!-- about section -->
     <section class="about">
@@ -100,9 +104,8 @@ const projectData = useNuxtApp().$projectData;
   position: relative;
   height: 100vh;
   padding: 94px 0 0 0;
-  background-color: $color-gray;
-  mix-blend-mode: difference;
   z-index: 1;
+  // mix-blend-mode: difference;
 }
 .mv-container {
   padding: 0 vw(12);
@@ -126,6 +129,7 @@ const projectData = useNuxtApp().$projectData;
   width: vw(81);
   height: vw(80);
   margin: 0 vw(6) 0 0;
+  color: $color-blue;
 }
 
 .mv-title-border {

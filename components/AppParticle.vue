@@ -223,17 +223,25 @@ const collide = () => {
  * 描画
  */
 const render = () => {
+  // ctx.fillStyle = "#f5f5f5";
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // ctx.fillStyle = "#000000";
+  // ctx.fillText("Hello World", 20, 800);
+  // ctx.font = "100px Arial";
 
   for (let i = 0; i < particles.length; i++) {
     const particle = particles[i];
     particle.x = particle.nextX;
     particle.y = particle.nextY;
 
+    ctx.save();
     ctx.beginPath();
     ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2, true);
+    // ctx.globalCompositeOperation = "difference";
     ctx.fillStyle = "#00daa1";
     ctx.fill();
+    ctx.restore();
   }
 };
 

@@ -60,3 +60,9 @@ if (typeof window !== "undefined") {
     </div>
   </NuxtLayout>
 </template>
+
+<style lang="scss" scoped>
+#smooth-content {
+  will-change: transform;
+}
+</style>
