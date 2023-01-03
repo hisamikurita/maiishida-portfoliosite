@@ -3,12 +3,9 @@ const { API_KEY, SERVICE_URL } = process.env;
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   runtimeConfig: {
-    serviceUrl: SERVICE_URL,
-    apiKey: API_KEY,
     public: {
-      serviceUrl:
-        process.env.NODE_ENV !== "production" ? SERVICE_URL : undefined,
-      apiKey: process.env.NODE_ENV !== "production" ? API_KEY : undefined,
+      serviceUrl: SERVICE_URL,
+      apiKey: API_KEY,
     },
   },
   // global css
