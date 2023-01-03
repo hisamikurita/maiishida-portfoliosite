@@ -1,5 +1,6 @@
 <script setup>
 const projectData = useNuxtApp().$projectData;
+// console.log(projectData);
 </script>
 
 <template>
@@ -48,7 +49,7 @@ const projectData = useNuxtApp().$projectData;
             </div>
             <ul class="pickup-list">
               <li v-for="(data, index) in projectData" class="pickup-item">
-                <NuxtLink :to="data.id" class="pickup-link">
+                <NuxtLink :to="`/works/${data.id}`" class="pickup-link">
                   <div class="pickup-item-title-area">
                     <span class="pickup-item-title-num"
                       >0{{ index + 1.0 }}</span
@@ -69,7 +70,7 @@ const projectData = useNuxtApp().$projectData;
     <section class="project">
       <ul>
         <li v-for="(data, index) in projectData">
-          <AppCardFullScreenTicket :project="data" />
+          <AppCardFullScreenTicket :project="data" :index="index" />
         </li>
       </ul>
     </section>
@@ -242,7 +243,7 @@ const projectData = useNuxtApp().$projectData;
 // project section
 //
 .project {
-  color: #f2b744;
+  // color: #f2b744;
 }
 
 //

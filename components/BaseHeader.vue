@@ -2,15 +2,15 @@
 const menus = [
   {
     name: "WORKS",
-    href: "works",
+    href: "/works",
   },
   {
     name: "ABOUT ME",
-    href: "about",
+    href: "/about",
   },
   {
     name: "CONTACT",
-    href: "contact",
+    href: "/contact",
   },
 ];
 const snsList = [

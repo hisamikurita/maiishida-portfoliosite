@@ -1,7 +1,7 @@
 <script setup>
 import { gsap } from "gsap";
 
-defineProps(["loopText"]);
+const props = defineProps(["loopText"]);
 
 const refRoot = ref();
 const refText = ref();
@@ -127,7 +127,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div ref="refRoot" class="root">
-    <span ref="refText" class="app-loop-text">{{ loopText }}</span>
+    <span ref="refText" class="app-loop-text">{{ props.loopText }}</span>
   </div>
 </template>
 

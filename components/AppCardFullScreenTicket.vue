@@ -1,53 +1,49 @@
 <script setup>
-const project = defineProps(["project"]);
-const { id } = project;
-console.log(project);
-console.log(id);
+const props = defineProps(["project", "index"]);
+const { id, title, desc, client, type, role, color } = props.project;
+const index = props.index + 1.0;
+const mainColor = ref(color.main);
+const subColor = ref(color.sub);
+const borderColor = ref(color.border);
+// microCMSでテキストエリアにした部分は改行が\nなので<br>に置換する
+const replaceDescJa = desc.ja.replaceAll("\n", "<br>");
+const replaceDescEn = desc.en.replaceAll("\n", "<br>");
+const replaceRole = role.replaceAll("\n", "<br>");
 </script>
 
 <template>
   <article class="article">
-    <NuxtLink to="#" class="article-link">
+    <NuxtLink :to="`/works/${id}`" class="article-link">
       <div class="article-left">
         <div class="article-border">
           <h2 class="article-title-wrapper">
-            <span class="article-title-num">01</span>
+            <span class="article-title-num">0{{ index }}</span>
             <span class="article-title">
-              FIND YOUR SPIRITS
-              <span class="article-title-ja">色づけ、わたし</span>
+              {{ title.main }}
+              <span class="article-title-ja">{{ title.sub }}</span>
             </span>
           </h2>
           <dl class="article-dl article-dl-outline">
             <dt class="article-dt">・OUTLINE</dt>
             <dd class="article-dd">
-              <span class="article-dd-ja">
-                自分だけの色(フロンティア)を見つけよう。<br />
-                大人になっても輝かしい青春を送ることができる。<br />
-                そんなイメージを表現したフロンティア様のリクルートサイトです。
-              </span>
-              <span class="article-dd-en">
-                FIND YOUR OWN COLOR (FRONTIER).<br /><br />EVEN IF YOU BECOME AN
-                ADULT, YOU CAN STILL ENJOY YOUR BRILLIANT YOUTH.THIS
-                <br />RECRUITING SITE FOR FRONTIER EXPRESSES SUCH AN IMAGE.
-              </span>
+              <span v-html="replaceDescJa" class="article-dd-ja"></span>
+              <span v-html="replaceDescEn" class="article-dd-en"></span>
             </dd>
           </dl>
           <dl class="article-dl">
             <dt class="article-dt">・SITE TYPE</dt>
-            <dd class="article-dd">RECRUIT SITE</dd>
+            <dd class="article-dd">{{ type }}</dd>
           </dl>
           <dl class="article-dl">
             <dt class="article-dt">・CLIENT</dt>
-            <dd class="article-dd">FRONTIER, INC</dd>
+            <dd class="article-dd">{{ client }}</dd>
           </dl>
           <dl class="article-dl">
             <dt class="article-dt">・MY ROLE</dt>
-            <dd class="article-dd">
-              WEB DESIGN<br />ILLUSTRATION<br />ANIMATION DESIGN
-            </dd>
+            <dd v-html="replaceRole" class="article-dd"></dd>
           </dl>
           <div class="article-move-text">
-            <AppLoopText loop-text="HOGE" />
+            <AppLoopText :loop-text="title.main" />
           </div>
         </div>
       </div>
@@ -56,7 +52,7 @@ console.log(id);
           <nuxt-icon name="asterisk" filled class="article-asterisk" />
         </div>
         <div class="article-index">
-          <span class="article-index-count">01</span>
+          <span class="article-index-count">0{{ index }}</span>
           <span class="article-index-all">05</span>
         </div>
         <p class="article-detail">
@@ -75,6 +71,7 @@ console.log(id);
 .article {
   position: relative;
   height: calc(var(--vh, 1vh) * 100);
+  color: v-bind(subColor);
 }
 
 .article-canvas {
@@ -97,7 +94,7 @@ console.log(id);
   width: 100%;
   height: 100%;
   padding: 30px 20px;
-  background-color: #0d48bc;
+  background-color: v-bind(mainColor);
   border-radius: 24px;
 }
 
@@ -106,7 +103,7 @@ console.log(id);
   width: 40.5%;
   height: 100%;
   padding: 30px 20px;
-  background-color: #0d48bc;
+  background-color: v-bind(mainColor);
   border-radius: 24px;
 }
 
@@ -114,7 +111,7 @@ console.log(id);
   position: relative;
   width: 100%;
   height: 100%;
-  border: solid 1px #0a3a96;
+  border: solid 1px v-bind(borderColor);
   overflow: hidden;
 }
 
@@ -123,7 +120,7 @@ console.log(id);
   margin: 0 0 0 20px;
   padding: 14px 0 40px 0;
   font-size: vw(100);
-  border-bottom: solid 1px #0a3a96;
+  border-bottom: solid 1px v-bind(borderColor);
 }
 
 .article-title {
@@ -149,7 +146,7 @@ console.log(id);
   font-size: 16px;
 
   &:not(:last-of-type) {
-    border-bottom: solid 1px #0a3a96;
+    border-bottom: solid 1px v-bind(borderColor);
   }
 }
 
@@ -188,9 +185,9 @@ console.log(id);
   padding: 20px 0 0 0;
   color: transparent;
   font-size: 80px;
-  -webkit-text-stroke: 2px #0a3a96;
-  text-stroke: 2px #0a3a96;
-  border-top: solid 1px #0a3a96;
+  -webkit-text-stroke: 2px v-bind(borderColor);
+  text-stroke: 2px v-bind(borderColor);
+  border-top: solid 1px v-bind(borderColor);
 }
 
 .article-asterisk {

@@ -7,6 +7,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "devDependencies": {
     "@nuxtjs/google-fonts": "^3.0.0-1",
     "nuxt": "3.0.0",
